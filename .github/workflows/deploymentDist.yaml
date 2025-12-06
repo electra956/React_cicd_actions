@@ -7,4 +7,5 @@ jobs:
             - name: Get code
               run: |
                 echo "cloning the repo"
-                git clone https://github.com/electra956/React_cicd_actions.git
+                echo "${{toJson(github)}}"
+                git clone https://github.com/${{github.repository}}.git
