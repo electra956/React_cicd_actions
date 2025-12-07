@@ -1,4 +1,4 @@
-name: Test-Code
+name: Deploy React to Github Pages
 on:
   push:
     branches:
@@ -13,14 +13,12 @@ jobs:
         steps:
             - name: Get code
               uses: actions/checkout@v5
-              #install NodeJS
             - name: Install Nodejs
               uses: actions/setup-node@v6
               with:
                   node-version: 24
             - name: version
               run: node -v
-              #install dependencies
             - name: Dependencies
               run: npm ci
             - name: Cache Dependencies
@@ -28,7 +26,6 @@ jobs:
               with: 
                 path: ~/.npm
                 key: ${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}
-              #run test 
             - name: Run Test
               run: npm run test
     build:
@@ -52,18 +49,25 @@ jobs:
             - name: Build Project
               run: npm run build
             - name: Upload Dist file
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-pages-artifact@v3 
               with:
                 name: dist-files
                 path: dist
     depoly:
         needs: build
         runs-on: ubuntu-latest
+        # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+        permissions:
+          pages: write      # to deploy to Pages
+          id-token: write   # to verify the deployment originates from an appropriate source
+
+        # Deploy to the github-pages environment
+        environment:
+          name: github-pages
+          url: ${{ steps.deployment.outputs.page_url }}
         steps:
-            - name: Upload Dist file
-              uses: actions/download-artifact@v4
-              with:
-                name: dist-files
-                path: dist
-            - name: Deploy
-              run: echo "Deply is Successful"
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+          with:
+            token: ${{secrets.GITHUB_TOKEN}}
