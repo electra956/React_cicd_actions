@@ -51,7 +51,7 @@ jobs:
             - name: Upload Dist file
               uses: actions/upload-pages-artifact@v3 
               with:
-                name: dist-files
+                name: github-pages
                 path: dist
     depoly:
         needs: build
@@ -63,7 +63,7 @@ jobs:
 
         # Deploy to the github-pages environment
         environment:
-          name: dist-files
+          name: github-pages
           url: ${{ steps.deployment.outputs.page_url }}
         steps:
         - name: Deploy to GitHub Pages
