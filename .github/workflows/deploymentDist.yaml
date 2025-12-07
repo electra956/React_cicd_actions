@@ -16,6 +16,11 @@ jobs:
               #install dependencies
             - name: Dependencies
               run: npm ci
+            - name: Cache Dependencies
+              uses: actions/cache@v4
+              with: 
+                path: ~/.npm
+                key: ${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}
               #run test 
             - name: Run Test
               run: npm run test
@@ -30,11 +35,16 @@ jobs:
               uses: actions/setup-node@v6
               with:
                 node-version: 20
+            - name: Cache Dependencies
+              uses: actions/cache@v4
+              with: 
+                path: ~/.npm
+                key: ${{runner.os}}-node-${{ hashFiles('**/package-lock.json') }}
             - name: Install Dependencies
               run: npm ci
 
             - name: Build Project
               run: npm run build
-#deplying The Project
+        #deplying The Project
             - name: Deploy
               run: echo "Deply is Successful"
